@@ -8,3 +8,6 @@ but without semantic compatibilty promise. See the [test file](https://github.co
 
 ### Author
 [Ridwan Abdul Hafidh](https://twitter.com/rdhafidh)
+
+### CI Status
+[![Azure Build Status](https://dev.azure.com/ridwanabdulhafidh/project1/_apis/build/status/rdhafidh.varianttype)](https://dev.azure.com/ridwanabdulhafidh/project1/_build/latest?definitionId=1)
