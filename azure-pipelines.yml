@@ -1,0 +1,12 @@
+# C/C++ with GCC
+# Build your C/C++ project with GCC using make.
+# Add steps that publish test results, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/c-cpp/gcc
+
+pool:
+  vmImage: 'Ubuntu 16.04'
+
+steps:
+- script: |
+     sudo apt-get install p7zip-full -y && wget https://github.com/rdhafidh/my_gun/releases/download/v1.0/clang7glibc2.11_libgcc_s_unwinder.7z && 7za x clang7glibc2.11_libgcc_s_unwinder.7z && chmod +x clang20062018/bin/clang-7 && cmake -DCMAKE_CXX_COMPILER=$PWD/clang20062018/bin/clang++ -DCMAKE_C_COMPILER=$PWD/clang20062018/bin/clang -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-std=c++17 -fsanitize=undefined" && make -j2 && LD_LIBRARY_PATH=$PWD/clang20062018/lib ./variant
+  displayName: 'make'
