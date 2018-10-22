@@ -71,10 +71,12 @@ VariantType &VariantType::operator=(const VariantType &anotherVar) {
       case TypeData::TYPE_IS_NUMBER:
       case TypeData::TYPE_IS_STRING:
       case TypeData::TYPE_IS_DOUBLE:
+		vectordata.clear();
         vardata = anotherVar.getVar();
         type = anotherVar.getType();
         break;
       default:
+		vectordata.clear();
         vardata = std::monostate();
         type = TypeData::TYPE_IS_UNDEFINED;
         break;

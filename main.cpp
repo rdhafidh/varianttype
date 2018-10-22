@@ -145,6 +145,11 @@ TEST(AssignVar, Assign) {
   EXPECT_EQ(true, lval == var);
   lval= 3.14;
   EXPECT_EQ(true, lval == 3.14);
+  VariantType vArr;
+  vArr <<VariantType((int64_t)10)<<VariantType(std::string("foo"));
+  vArr =std::string("bar");
+  EXPECT_EQ(true, vArr.getVector().size()==0);
+  EXPECT_EQ(true, vArr=="bar");
 }
 
 TEST(AssignVar, SelfAssign) {
