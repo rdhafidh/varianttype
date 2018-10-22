@@ -36,7 +36,7 @@ enum class TypeErrorVariant {
   NO_ERROR
 };
 
-bool isOkTypeVariant(const TypeErrorVariant &type);
+bool isOkTypeReturnVariant(const TypeErrorVariant &type);
 
 class VariantType;
 
@@ -84,7 +84,10 @@ class VariantType {
   TypeData getType() const;
 
   Var getVar() const;
+
   VectorData getVector() const;
+
+  bool isNull() const;
 
   static int64_t makeNumber(int n);
   static double makeDouble(float n);

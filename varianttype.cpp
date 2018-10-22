@@ -59,23 +59,26 @@ VariantType::VariantType(double n) {
 }
 
 VariantType &VariantType::operator=(const VariantType &anotherVar) {
-  intVar();
-  switch (anotherVar.getType()) {
-    case TypeData::TYPE_IS_ARRAY:
-      vectordata = anotherVar.getVector();
-      type = anotherVar.getType();
-      break;
-    case TypeData::TYPE_IS_BOOL:
-    case TypeData::TYPE_IS_NUMBER:
-    case TypeData::TYPE_IS_STRING:
-    case TypeData::TYPE_IS_DOUBLE:
-      vardata = anotherVar.getVar();
-      type = anotherVar.getType();
-      break;
-    default:
-      vardata = std::monostate();
-      type = TypeData::TYPE_IS_UNDEFINED;
-      break;
+  bool e = *this == anotherVar;
+  if (!e) {
+    intVar();
+    switch (anotherVar.getType()) {
+      case TypeData::TYPE_IS_ARRAY:
+        vectordata = anotherVar.getVector();
+        type = anotherVar.getType();
+        break;
+      case TypeData::TYPE_IS_BOOL:
+      case TypeData::TYPE_IS_NUMBER:
+      case TypeData::TYPE_IS_STRING:
+      case TypeData::TYPE_IS_DOUBLE:
+        vardata = anotherVar.getVar();
+        type = anotherVar.getType();
+        break;
+      default:
+        vardata = std::monostate();
+        type = TypeData::TYPE_IS_UNDEFINED;
+        break;
+    }
   }
   return *this;
 }
@@ -645,6 +648,8 @@ VariantType &VariantType::operator<<(const VariantType &anotherVar) {
   return *this;
 }
 
+bool VariantType::isNull() const { return type == TypeData::TYPE_IS_UNDEFINED; }
+
 void VariantType::intVar() {
   minval = std::numeric_limits<int64_t>::min();
   maxval = std::numeric_limits<int64_t>::max();
@@ -796,7 +801,7 @@ bool operator==(VariantType &var, const VectorData &vec) {
   return ok;
 }
 
-bool isOkTypeVariant(const TypeErrorVariant &type) {
+bool isOkTypeReturnVariant(const TypeErrorVariant &type) {
   return type == TypeErrorVariant::NO_ERROR;
 }
 
