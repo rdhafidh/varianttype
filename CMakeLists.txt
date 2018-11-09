@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
-project(bignumtest)
+project(varianttype)
 
-set(SRC main.cpp varianttype.cpp lib/src/gtest-all.cc)
+set(SRC varianttype.cpp )
+SET(APP main.cpp lib/src/gtest-all.cc)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
  add_compile_options( -Werror -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Wno-self-assign-overloaded)
@@ -17,9 +18,11 @@ if(ANDROID AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 endif()
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR} lib/include lib )
+add_library(variantlib ${SRC})
 
-add_executable(variant ${SRC} )
-
+add_executable(variant ${APP})
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-target_link_libraries(variant pthread)
+target_link_libraries(variant variantlib pthread)
+else()
+target_link_libraries(variant variantlib )
 endif()

@@ -8,5 +8,5 @@ pool:
 
 steps:
 - script: |
-     sudo apt-get install p7zip-full -y && wget https://github.com/rdhafidh/my_gun/releases/download/v1.0/clang7glibc2.11_libgcc_s_unwinder.7z && 7za x clang7glibc2.11_libgcc_s_unwinder.7z && chmod +x clang20062018/bin/clang-7 && cmake -DCMAKE_CXX_COMPILER=$PWD/clang20062018/bin/clang++ -DCMAKE_C_COMPILER=$PWD/clang20062018/bin/clang -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-std=c++17 -fsanitize=undefined" && make -j2 && LD_LIBRARY_PATH=$PWD/clang20062018/lib ./variant
+     sudo apt-get install p7zip-full cmake -y && wget https://github.com/rdhafidh/my_gun/releases/download/v1.0/clang7glibc2.11_libgcc_s_unwinder.7z && 7za x clang7glibc2.11_libgcc_s_unwinder.7z && chmod +x clang20062018/bin/clang-7 && python build.py --dir . --clroot_dir $PWD/clang20062018 --name variant --enable_log
   displayName: 'make'
