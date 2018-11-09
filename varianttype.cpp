@@ -1,12 +1,11 @@
 #include "varianttype.h"
 #include <cfenv>
 
-namespace val {
-VariantType::VariantType() : type(TypeData::TYPE_IS_UNDEFINED) {
+val::VariantType::VariantType() : type(TypeData::TYPE_IS_UNDEFINED) {
   intVar();
   vardata = std::monostate();
 }
-
+namespace val {
 VariantType::VariantType(bool e) {
   vardata = (int64_t)e;
   type = TypeData::TYPE_IS_BOOL;
@@ -71,12 +70,12 @@ VariantType &VariantType::operator=(const VariantType &anotherVar) {
       case TypeData::TYPE_IS_NUMBER:
       case TypeData::TYPE_IS_STRING:
       case TypeData::TYPE_IS_DOUBLE:
-		vectordata.clear();
+        vectordata.clear();
         vardata = anotherVar.getVar();
         type = anotherVar.getType();
         break;
       default:
-		vectordata.clear();
+        vectordata.clear();
         vardata = std::monostate();
         type = TypeData::TYPE_IS_UNDEFINED;
         break;
@@ -97,6 +96,10 @@ bool VariantType::operator==(const VariantType &anotherVar) {
     }
   }
   return ok;
+}
+
+bool VariantType::operator!=(const VariantType &anotherVar) {
+  return (*this == anotherVar) == false;
 }
 
 int64_t VariantType::makeNumber(int n) { return (int64_t)n; }
@@ -652,6 +655,12 @@ VariantType &VariantType::operator<<(const VariantType &anotherVar) {
 
 bool VariantType::isNull() const { return type == TypeData::TYPE_IS_UNDEFINED; }
 
+void VariantType::setNull() {
+  vectordata.clear();
+  vardata = std::monostate();
+  type = TypeData::TYPE_IS_UNDEFINED;
+}
+
 void VariantType::intVar() {
   minval = std::numeric_limits<int64_t>::min();
   maxval = std::numeric_limits<int64_t>::max();
@@ -749,56 +758,76 @@ std::ostream &operator<<(std::ostream &os, const VariantType &var) {
 }
 
 bool operator==(VariantType &var, bool e) {
-  bool ok = (var.getType() == TypeData::TYPE_IS_BOOL);
-  if (ok) {
-    ok = (std::get<int64_t>(var.getVar()) == (int64_t)e);
+  bool ok = false;
+  switch (var.getType()) {
+    case TypeData::TYPE_IS_BOOL:
+      ok = (std::get<int64_t>(var.getVar()) == (int64_t)e);
+      break;
+    default:
+      break;
   }
+
   return ok;
 }
 
 bool operator==(VariantType &var, const std::string &e) {
-  bool ok = (var.getType() == TypeData::TYPE_IS_STRING);
-  if (ok) {
-    ok = (std::get<std::string>(var.getVar()) == e);
+  bool ok = false;
+  switch (var.getType()) {
+    case TypeData::TYPE_IS_STRING:
+      ok = (std::get<std::string>(var.getVar()) == e);
+      break;
+    default:
+      break;
   }
   return ok;
 }
 
 bool operator==(VariantType &var, const char *e) {
-  bool ok = (var.getType() == TypeData::TYPE_IS_STRING);
-  if (ok) {
-    ok = (std::get<std::string>(var.getVar()) == e);
+  bool ok = false;
+  switch (var.getType()) {
+    case TypeData::TYPE_IS_STRING:
+      ok = (std::get<std::string>(var.getVar()) == e);
+      break;
+    default:
+      break;
   }
   return ok;
 }
 
 bool operator==(VariantType &var, int64_t e) {
-  bool ok = (var.getType() == TypeData::TYPE_IS_NUMBER);
-  if (ok) {
-    ok = (std::get<int64_t>(var.getVar()) == e);
+  bool ok = false;
+  switch (var.getType()) {
+    case TypeData::TYPE_IS_NUMBER:
+      ok = (std::get<int64_t>(var.getVar()) == e);
+      break;
+    default:
+      break;
   }
   return ok;
 }
 
 bool operator==(VariantType &var, double e) {
-  bool ok = (var.getType() == TypeData::TYPE_IS_DOUBLE);
-  if (ok) {
-    ok = (std::get<double>(var.getVar()) == e);
+  bool ok = false;
+  switch (var.getType()) {
+    case TypeData::TYPE_IS_DOUBLE:
+      ok = (std::get<double>(var.getVar()) == e);
+      break;
+    default:
+      break;
   }
   return ok;
 }
 
 bool operator==(VariantType &var, const VectorData &vec) {
-  bool ok = (var.getType() == TypeData::TYPE_IS_ARRAY);
-  if (ok) {
-    auto vec1 = var.getVector();
-    ok = vec1.size() == vec.size();
-    if (ok) {
-      for (decltype(vec1.size()) x = 0; x < vec1.size(); x++) {
-        ok = vec1.at(x) == vec.at(x);
-        if (!ok) return false;
+  bool ok = false;
+  switch (var.getType()) {
+    case TypeData::TYPE_IS_ARRAY: 
+      if (ok) {
+        ok=var.getVector ()==vec;
       }
-    }
+      break;
+    default:
+      break;
   }
   return ok;
 }
@@ -808,7 +837,16 @@ bool isOkTypeReturnVariant(const TypeErrorVariant &type) {
 }
 
 bool operator==(const VariantType &var1, const VariantType &var2) {
-  return (var1.getType() == var2.getType() && var1.getVar() == var2.getVar());
+  bool ok = var1.getType() == var2.getType();
+  switch (var1.getType()) {
+    case TypeData::TYPE_IS_ARRAY:
+      ok = var1.getVector() == var2.getVector();
+      break;
+    default:
+      ok = var1.getVar() == var2.getVar();
+      break;
+  }
+  return ok;
 }
 
 }  // namespace val

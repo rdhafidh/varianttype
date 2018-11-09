@@ -58,6 +58,7 @@ class VariantType {
   VariantType(double n);
   VariantType &operator=(const VariantType &anotherVar);
   bool operator==(const VariantType &anotherVar);
+  bool operator!=(const VariantType &anotherVar);
   VariantType &operator<<(const std::string &str);
   VariantType &operator<<(const char *buf);
   VariantType &operator<<(const VariantType &anotherVar);
@@ -88,6 +89,7 @@ class VariantType {
   VectorData getVector() const;
 
   bool isNull() const;
+  void setNull();
 
   static int64_t makeNumber(int n);
   static double makeDouble(float n);

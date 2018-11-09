@@ -66,6 +66,22 @@ TEST(CompareTest, ComparePlainOldData) {
                 VectorData({VariantType(VariantType::makeNumber(100)),
                             VariantType(VariantType::makeNumber(23)),
                             VariantType(std::string("false"))}));
+  EXPECT_EQ(
+      true,
+      VariantType(VectorData({VariantType(VariantType::makeNumber(100)),
+                              VariantType(VariantType::makeNumber(23)),
+                              VariantType(std::string("false"))})) ==
+          VariantType(VectorData({VariantType(VariantType::makeNumber(100)),
+                                  VariantType(VariantType::makeNumber(23)),
+                                  VariantType(std::string("false"))})));
+  EXPECT_EQ(
+      false,
+      VariantType(VectorData({VariantType(VariantType::makeNumber(100)),
+                              VariantType(VariantType::makeNumber(23)),
+                              VariantType(std::string("false"))})) ==
+          VariantType(VectorData({VariantType(VariantType::makeNumber(100)),
+                                  VariantType(VariantType::makeNumber(23)),
+                                  VariantType(std::string("")),VariantType()})));
 
   auto items = {VariantType(std::string("foo bar")), VariantType(true)};
   VectorData arrayItem(items);
@@ -143,13 +159,13 @@ TEST(AssignVar, Assign) {
   EXPECT_EQ((size_t)4, var.getVector().size());
   VariantType lval = var;
   EXPECT_EQ(true, lval == var);
-  lval= 3.14;
+  lval = 3.14;
   EXPECT_EQ(true, lval == 3.14);
   VariantType vArr;
-  vArr <<VariantType((int64_t)10)<<VariantType(std::string("foo"));
-  vArr =std::string("bar");
-  EXPECT_EQ(true, vArr.getVector().size()==0);
-  EXPECT_EQ(true, vArr=="bar");
+  vArr << VariantType((int64_t)10) << VariantType(std::string("foo"));
+  vArr = std::string("bar");
+  EXPECT_EQ(true, vArr.getVector().size() == 0);
+  EXPECT_EQ(true, vArr == "bar");
 }
 
 TEST(AssignVar, SelfAssign) {
@@ -243,14 +259,14 @@ TEST(TestSub, TestSubNumber) {
 
   TypeErrorVariant errFlag = TypeErrorVariant::NO_ERROR;
   bool e = var.subVariantNumber(-std::numeric_limits<int64_t>::max(), &errFlag);
-  
+
   EXPECT_EQ(false, e);
-  EXPECT_EQ(TypeErrorVariant::ERROR_ARITH_OVERFLOW, errFlag); 
-  e=var.subVariantNumber(std::numeric_limits<int>::max(),&errFlag);
+  EXPECT_EQ(TypeErrorVariant::ERROR_ARITH_OVERFLOW, errFlag);
+  e = var.subVariantNumber(std::numeric_limits<int>::max(), &errFlag);
   EXPECT_EQ(TypeErrorVariant::NO_ERROR, errFlag);
-  EXPECT_EQ(true,e);
-  EXPECT_EQ(true,var==(int64_t)(std::numeric_limits<int64_t>::max()-std::numeric_limits<int>::max()));
-  
+  EXPECT_EQ(true, e);
+  EXPECT_EQ(true, var == (int64_t)(std::numeric_limits<int64_t>::max() -
+                                   std::numeric_limits<int>::max()));
 }
 
 TEST(TestSub, TestSubBoolean) {
@@ -259,18 +275,16 @@ TEST(TestSub, TestSubBoolean) {
 
   TypeErrorVariant errFlag = TypeErrorVariant::NO_ERROR;
   bool e = var.subVariantNumber(std::numeric_limits<int64_t>::min(), &errFlag);
-  
-  EXPECT_EQ(false, e);
-  EXPECT_EQ(TypeErrorVariant::ERROR_ARITH_OVERFLOW, errFlag); 
-  e=var.subVariantNumber(std::numeric_limits<int>::min(),&errFlag);
-  EXPECT_EQ(TypeErrorVariant::NO_ERROR, errFlag);
-  EXPECT_EQ(true,e);
-  int64_t res=std::numeric_limits<int>::max();
-  res+=2;
-  EXPECT_EQ(true,var==res);
-  
-}
 
+  EXPECT_EQ(false, e);
+  EXPECT_EQ(TypeErrorVariant::ERROR_ARITH_OVERFLOW, errFlag);
+  e = var.subVariantNumber(std::numeric_limits<int>::min(), &errFlag);
+  EXPECT_EQ(TypeErrorVariant::NO_ERROR, errFlag);
+  EXPECT_EQ(true, e);
+  int64_t res = std::numeric_limits<int>::max();
+  res += 2;
+  EXPECT_EQ(true, var == res);
+}
 
 TEST(TestSub, TestSubDouble) {
   using namespace val;
@@ -278,18 +292,16 @@ TEST(TestSub, TestSubDouble) {
 
   TypeErrorVariant errFlag = TypeErrorVariant::NO_ERROR;
   bool e = var.subVariantDouble(std::numeric_limits<double>::min(), &errFlag);
-   
-  EXPECT_EQ(true, e); 
-  EXPECT_EQ(TypeErrorVariant::NO_ERROR, errFlag); 
-  double res=std::get<double>(var.getVar());
-  e=var.subVariantNumber(std::numeric_limits<int>::min(),&errFlag);
-  EXPECT_EQ(TypeErrorVariant::NO_ERROR, errFlag);
-  EXPECT_EQ(true,e); 
-  res-=std::numeric_limits<int>::min();
-  EXPECT_EQ(true,var==res);
-  
-}
 
+  EXPECT_EQ(true, e);
+  EXPECT_EQ(TypeErrorVariant::NO_ERROR, errFlag);
+  double res = std::get<double>(var.getVar());
+  e = var.subVariantNumber(std::numeric_limits<int>::min(), &errFlag);
+  EXPECT_EQ(TypeErrorVariant::NO_ERROR, errFlag);
+  EXPECT_EQ(true, e);
+  res -= std::numeric_limits<int>::min();
+  EXPECT_EQ(true, var == res);
+}
 
 TEST(ArrayPrintTest, PrintArray) {
   using namespace val;
